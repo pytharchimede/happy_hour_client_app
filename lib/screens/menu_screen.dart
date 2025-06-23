@@ -19,12 +19,17 @@ class _MenuScreenState extends State<MenuScreen> {
     loadMeals();
   }
 
-  void loadMeals() async {
+  Future<void> loadMeals() async {
     try {
-      final data = await apiService.fetchMeals();
-      setState(() => meals = data);
+      final meals = await apiService.fetchMeals();
+      if (meals.isEmpty) {
+        print('Aucun menu reçu');
+      }
+      setState(() {
+        this.meals = meals;
+      });
     } catch (e) {
-      print('Erreur lors du chargement: $e');
+      print('Erreur lors du chargement des menus: $e');
     }
   }
 
