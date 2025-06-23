@@ -13,7 +13,10 @@ class HappyHourApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Happy Hour',
-      theme: ThemeData(primarySwatch: Colors.amber),
+      theme: ThemeData(
+        primarySwatch: Colors.amber,
+        useMaterial3: false, // Ajoute cette ligne
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => WelcomeScreen(),
