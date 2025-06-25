@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api.dart';
+import 'cart_screen.dart';
 import 'commande_screen.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -10,8 +11,8 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  List meals = [];
-  List selectedMeals = [];
+  List<Map<String, dynamic>> meals = [];
+  List<Map<String, dynamic>> selectedMeals = [];
 
   @override
   void initState() {
@@ -19,17 +20,37 @@ class _MenuScreenState extends State<MenuScreen> {
     loadMeals();
   }
 
-  void loadMeals() async {
+  Future<void> loadMeals() async {
     try {
-      final data = await apiService.fetchMeals();
-      setState(() => meals = data);
+      final result = await apiService.fetchMeals();
+      final List<Map<String, dynamic>> mealsList =
+          List<Map<String, dynamic>>.from(result);
+      if (mealsList.isEmpty) {
+        print('Aucun menu reçu');
+      }
+      setState(() {
+        meals = mealsList;
+      });
     } catch (e) {
-      print('Erreur lors du chargement: $e');
+      print('Erreur lors du chargement des menus: $e');
     }
   }
 
   void addToCart(meal) {
-    setState(() => selectedMeals.add(meal));
+    setState(() {
+      // Cherche si le plat est déjà dans le panier
+      final index = selectedMeals.indexWhere((m) => m['name'] == meal['name']);
+      if (index != -1) {
+        // Si déjà présent, augmente la quantité
+        selectedMeals[index]['quantity'] =
+            (selectedMeals[index]['quantity'] ?? 1) + 1;
+      } else {
+        // Sinon, ajoute avec quantité 1
+        final mealWithQuantity = Map<String, dynamic>.from(meal);
+        mealWithQuantity['quantity'] = 1;
+        selectedMeals.add(mealWithQuantity);
+      }
+    });
   }
 
   @override
@@ -38,6 +59,12 @@ class _MenuScreenState extends State<MenuScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text('HAPPY HOUR'),
         actions: [
           Stack(
@@ -48,7 +75,18 @@ class _MenuScreenState extends State<MenuScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => CommandeScreen(selectedMeals)),
+                      builder: (_) => CartScreen(
+                        meals: selectedMeals,
+                        onValidate: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CommandeScreen(selectedMeals),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
               ),
