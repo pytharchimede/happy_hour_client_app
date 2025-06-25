@@ -74,7 +74,24 @@ class _CartScreenState extends State<CartScreen> {
               itemBuilder: (_, i) {
                 final meal = cart[i];
                 return ListTile(
-                  leading: const Icon(Icons.fastfood, color: Colors.amber),
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      meal['imageUrl'] != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                meal['imageUrl'],
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : const SizedBox(width: 40, height: 40),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.fastfood, color: Colors.amber),
+                    ],
+                  ),
                   title: Text(meal['name'] ?? ''),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
