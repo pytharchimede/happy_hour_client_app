@@ -16,7 +16,8 @@ class _CommandeScreenState extends State<CommandeScreen> {
   final addressCtrl = TextEditingController();
   final noteCtrl = TextEditingController();
 
-  double get total => widget.meals.fold(0, (sum, m) => sum + (m['price'] ?? 0));
+  double get total => widget.meals
+      .fold(0, (sum, m) => sum + (m['price'] ?? 0) * (m['quantity'] ?? 1));
 
   void sendOrder() async {
     if (nameCtrl.text.isEmpty ||
@@ -52,30 +53,114 @@ class _CommandeScreenState extends State<CommandeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Votre commande')),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            Text('Total: $total FCFA', style: const TextStyle(fontSize: 18)),
-            TextField(
-                controller: noteCtrl,
-                decoration: const InputDecoration(labelText: 'Commentaires')),
-            TextField(
-                controller: nameCtrl,
-                decoration: const InputDecoration(labelText: 'Nom')),
-            TextField(
-                controller: phoneCtrl,
-                decoration: const InputDecoration(labelText: 'Téléphone'),
-                keyboardType: TextInputType.phone),
-            TextField(
-                controller: addressCtrl,
-                decoration:
-                    const InputDecoration(labelText: 'Adresse de livraison')),
-            const SizedBox(height: 20),
-            ElevatedButton(
-                onPressed: sendOrder, child: const Text('Commander')),
-          ],
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text('Votre commande'),
+        backgroundColor: Colors.amber,
+        elevation: 2,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Icon(Icons.shopping_bag,
+                        size: 60, color: Colors.amber[700]),
+                  ),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: Text(
+                      'Total: $total FCFA',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  TextField(
+                    controller: nameCtrl,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.person, color: Colors.amber),
+                      labelText: 'Nom',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  TextField(
+                    controller: phoneCtrl,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.phone, color: Colors.amber),
+                      labelText: 'Téléphone',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 18),
+                  TextField(
+                    controller: addressCtrl,
+                    decoration: InputDecoration(
+                      prefixIcon:
+                          const Icon(Icons.location_on, color: Colors.amber),
+                      labelText: 'Adresse de livraison',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  TextField(
+                    controller: noteCtrl,
+                    decoration: InputDecoration(
+                      prefixIcon:
+                          const Icon(Icons.comment, color: Colors.amber),
+                      labelText: 'Commentaires',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    maxLines: 2,
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton.icon(
+                    onPressed: sendOrder,
+                    icon: const Icon(Icons.send, color: Colors.white),
+                    label: const Text(
+                      'Commander',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber[700],
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

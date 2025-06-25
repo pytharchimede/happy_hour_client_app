@@ -21,7 +21,7 @@ class WelcomeScreen extends StatelessWidget {
                   style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 40),
-            Image.asset('assets/logo.jpg', width: 150),
+            // Image.asset('assets/logo.jpg', width: 150),
           ],
         ),
       ),
