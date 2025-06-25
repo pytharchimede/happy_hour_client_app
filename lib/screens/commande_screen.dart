@@ -16,7 +16,8 @@ class _CommandeScreenState extends State<CommandeScreen> {
   final addressCtrl = TextEditingController();
   final noteCtrl = TextEditingController();
 
-  double get total => widget.meals.fold(0, (sum, m) => sum + (m['price'] ?? 0));
+  double get total => widget.meals
+      .fold(0, (sum, m) => sum + (m['price'] ?? 0) * (m['quantity'] ?? 1));
 
   void sendOrder() async {
     if (nameCtrl.text.isEmpty ||
